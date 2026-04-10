@@ -1,0 +1,42 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import { connectDB } from './config/db.js';
+import { env } from './config/env.js';
+import { errorHandler } from './middleware/errorHandler.js';
+import { globalRateLimiter } from './middleware/rateLimiter.js';
+import searchRoutes from './routes/search.js';
+import placesRoutes from './routes/places.js';
+import itineraryRoutes from './routes/itinerary.js';
+import authRoutes from './routes/auth.js';
+
+await connectDB();
+
+const app = express();
+
+// Security & performance middleware
+app.use(helmet());
+app.use(compression());
+app.use(cors({ origin: env.NODE_ENV === 'production' ? 'https://yourdomain.com' : '*' }));
+app.use(express.json({ limit: '10kb' })); // Guard against large payloads
+app.use(globalRateLimiter);
+
+// Health check (for Render/Railway uptime pings)
+app.get('/health', (_, res) => res.json({ status: 'ok', ts: Date.now() }));
+
+// API routes — all versioned under /api/v1
+app.use('/api/v1/auth',      authRoutes);
+app.use('/api/v1/search',    searchRoutes);
+app.use('/api/v1/places',    placesRoutes);
+app.use('/api/v1/itinerary', itineraryRoutes);
+
+// 404 handler
+app.use((req, res) => res.status(404).json({ error: 'Route not found' }));
+
+// Global error handler (must be last)
+app.use(errorHandler);
+
+app.listen(env.PORT, () =>
+  console.log(`TravelMate API running on port ${env.PORT} [${env.NODE_ENV}]`)
+);
