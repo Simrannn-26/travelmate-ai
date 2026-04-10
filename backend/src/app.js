@@ -13,12 +13,12 @@ import itineraryRoutes from './routes/itinerary.js';
 import authRoutes from './routes/auth.js';
 
 // 🔌 Connect DB safely (won't crash app if it fails)
-try {
-  await connectDB();
-  console.log("Database connected");
-} catch (err) {
-  console.error("DB connection failed:", err.message);
-}
+//try {
+//  await connectDB();
+//  console.log("Database connected");
+//} catch (err) {
+//  console.error("DB connection failed:", err.message);
+//}
 
 const app = express();
 
