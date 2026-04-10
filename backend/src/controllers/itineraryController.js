@@ -1,4 +1,4 @@
-import { generateItinerary, analyzeSentiment } from '../services/ai.js';
+import { generateItinerary } from '../services/ai.js';
 import Trip from '../models/Trip.js';
 import { AppError } from '../middleware/errorHandler.js';
 
