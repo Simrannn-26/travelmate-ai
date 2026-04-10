@@ -1,4 +1,16 @@
-import { Router } from 'express';
-import { search } from '../controllers/searchController.js';
-import { cache } from '../middleware/cache.js';
-export default Router().post('/', cache(3600), search);
+import express from "express";
+
+const router = express.Router();
+
+// ✅ THIS IS THE IMPORTANT PART
+router.get("/", (req, res) => {
+  const { city } = req.query;
+
+  res.json({
+    success: true,
+    city: city || "Not provided",
+    message: `Search results for ${city}`
+  });
+});
+
+export default router;
