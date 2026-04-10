@@ -1,3 +1,5 @@
-export const cache = (req, res, next) => {
-  next(); // disable caching for now
+export const cache = () => {
+  return (req, res, next) => {
+    next(); // just pass through
+  };
 };
